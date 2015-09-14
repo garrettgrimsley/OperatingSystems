@@ -20,5 +20,3 @@ OSP : $(ASG_DIR)osp.o queue.o
 
 queue.o : queue.c queue.h
 	$(C_COMP) -c -g queue.c 
-
-

@@ -23,14 +23,15 @@ void initQueue(Queue *theQueue) {
 }
 
 
-void enQueue(Queue *theQueue, data_t *data) {
-    struct queueNode newQueueNode = {NULL, NULL, data};
-    newQueueNode.data->value = data->value;
-    newQueueNode.data->key = data->key;
-    newQueueNode.prev = theQueue->tail;
-    theQueue->tail = &newQueueNode;
-    if (theQueue->head != NULL) {
-        theQueue->head = &newQueueNode;
+void enQueue(Queue* theQueue, data_t *data) {
+    QueueNode *letsTryMalloc;
+    letsTryMalloc = (QueueNode *) malloc(sizeof(QueueNode));
+    QueueNode putInMalloc = {NULL, NULL, data};
+    *letsTryMalloc = putInMalloc;
+    printf("Key: %i \t Value: %i\n", letsTryMalloc->data->key, letsTryMalloc->data->value);
+    if (theQueue->head == NULL) {
+        theQueue->head = letsTryMalloc;
+        printf("WE NULL STILL");
     }
 }
 
@@ -46,7 +47,10 @@ data_t *frontValue(Queue *theQueue) {
 
 
 data_t *deQueue(Queue *theQueue) {
-
+    data_t *data_tPointer = theQueue->head->data;
+    theQueue->head = theQueue->head->prev;
+    theQueue->head->next = NULL;
+    return data_tPointer;
 }
 
 
@@ -67,7 +71,16 @@ void purge(Queue *theQueue, data_t *data) {
 
 
 void printQ(Queue *theQueue, char label[]) {
-    printf("aye");
+    if (&theQueue->head != NULL) {
+        printf("ye");
+    }
+    QueueNode *nextNode;
+    nextNode = theQueue->head;
+    while (&nextNode != NULL) {
+        printf("%s", label);
+        printf(toString((theQueue->head->prev->data)));
+        nextNode = nextNode->next;
+    }
 }
 
 
@@ -78,11 +91,11 @@ char *toString(data_t *d) {
         sprintf(result, "NULL");
     else
         sprintf(result, "key=%d(data=%d) ", d->key, d->value);
+
     return result;
 }
 
 int main() {
-    printf("That's why I\n");
     Queue myQueue;
     QueueNode *p;
     data_t data[10], d2;
@@ -97,6 +110,7 @@ int main() {
 
         enQueue(&myQueue, &data[i]);
     }
+    printf("That's why I\n");
     printQ(&myQueue, "MyQueue:");
     return 0;
 
