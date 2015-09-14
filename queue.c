@@ -29,6 +29,10 @@ void enQueue(Queue* theQueue, data_t *data) {
     QueueNode putInMalloc = {NULL, NULL, data};
     *letsTryMalloc = putInMalloc;
     printf("Key: %i \t Value: %i\n", letsTryMalloc->data->key, letsTryMalloc->data->value);
+    if (theQueue->tail != NULL) {
+        theQueue->tail = letsTryMalloc;
+    }
+    theQueue->tail = letsTryMalloc;
     if (theQueue->head == NULL) {
         theQueue->head = letsTryMalloc;
         printf("WE NULL STILL");
