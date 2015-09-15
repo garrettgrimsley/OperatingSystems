@@ -56,10 +56,12 @@ data_t *frontValue(Queue *theQueue) {
 
 
 data_t *deQueue(Queue *theQueue) {
-    data_t *data_tPointer = theQueue->head->data;
-    theQueue->head = theQueue->head->prev;
-    theQueue->head->next = NULL;
-    return data_tPointer;
+    if (theQueue->head) {
+        data_t *data_tPointer = theQueue->head->data;
+        theQueue->head = theQueue->head->prev;
+        theQueue->head->next = NULL;
+        return data_tPointer;
+    }
 }
 
 
@@ -76,14 +78,26 @@ void removeNode(Queue *theQueue, QueueNode *p) {
 
 QueueNode *findNode(Queue *theQueue, data_t *data) {
     if (theQueue->head == NULL) {
-        // Do something here?
+        // Do something to fail here.
     } else if (theQueue->head->data->key == data->key) {
         return theQueue->head;
+    } else {
+        QueueNode *tempNode;
+        tempNode = theQueue->head;
+        while (tempNode->prev) {
+            if (tempNode->data->key == data->key) {
+                return tempNode;
+            }
+            tempNode = tempNode->prev;
+        }
     }
 }
 
 
 data_t *findValue(Queue *theQueue, data_t *data) {
+    if (theQueue->head) {
+
+    }
 }
 
 
@@ -140,7 +154,7 @@ int main() {
     printf("First dequeue removes: %s\n", toString(deQueue(&myQueue)));
     printf("Second dequeue removes: %s\n", toString(deQueue(&myQueue)));
     printf("\nThe front node is at memory address %p\n", frontNode(&myQueue));
-    findNode(&myQueue, myQueue.head->data);
+    printf("The node with Key ==  %i is at memory location %p", myQueue.tail->data->key, findNode(&myQueue, &data[2]));
     return 0;
 
 }
