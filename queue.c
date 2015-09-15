@@ -72,15 +72,6 @@ data_t *deQueue(Queue *theQueue) {
 }
 
 
-void removeNode(Queue *theQueue, QueueNode *p) {
-    // Start at the head, search through the tail.
-    if (theQueue->head) { // Check to make sure there is a head.
-        QueueNode *checkNode;
-        checkNode = theQueue->head;
-    }
-}
-
-
 QueueNode *findNode(Queue *theQueue, data_t *data) {
     if (theQueue->head == NULL) {
         exit(EXIT_FAILURE);
@@ -104,8 +95,22 @@ data_t *findValue(Queue *theQueue, data_t *data) {
     return findNode(theQueue, data)->data;
 }
 
+void removeNode(Queue *theQueue, QueueNode *p) {
+    // Check if empty, but I don't think I need to do this check
+    if (theQueue->head) {
+        if (p->prev) {
+            p->prev->next = p->next;
+        }
+        if (p->next) {
+            p->next->prev = p->prev;
+        }
+        free(p);
+    }
+    return;
+}
 
 void purge(Queue *theQueue, data_t *data) {
+
 }
 
 
@@ -153,7 +158,7 @@ int main() {
         enQueue(&myQueue, &data[i]);
     }
     printf("That's why I\n");
-    printQ(&myQueue, "MyQueue:");
+    printQ(&myQueue, "MyQueue: ");
     printf("\n");
     printf("The front node is at memory address %p\n", frontNode(&myQueue));
     printf("The value returned by frontValue is: %s\n", toString(frontValue(&myQueue)));
@@ -163,6 +168,13 @@ int main() {
     printf("The node with Key ==  %i is at memory location %p\n", myQueue.tail->data->key,
            findNode(&myQueue, &data[2]));
     printf("Value for node where Key == %i is: %s\n", 6, toString(findValue(&myQueue, &data[6])));
+    p = myQueue.head->prev->prev;
+    printQ(&myQueue, "Queue is now: ");
+    printf("\n");
+    printf("Pointer p, address: %p points to item with data: %s\n", p, toString(p->data));
+    printf("Calling to remove node p\n");
+    removeNode(&myQueue, p);
+    printQ(&myQueue, "Queue after removeNode() call: ");
     return 0;
 
 }
