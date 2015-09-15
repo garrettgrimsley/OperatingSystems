@@ -23,30 +23,35 @@ void initQueue(Queue *theQueue) {
 }
 
 
-void enQueue(Queue* theQueue, data_t *data) {
+void enQueue(Queue *theQueue, data_t *data) {
     QueueNode *letsTryMalloc;
     letsTryMalloc = (QueueNode *) malloc(sizeof(QueueNode));
     QueueNode putInMalloc = {NULL, NULL, data};
     *letsTryMalloc = putInMalloc;
     printf("Key: %i \t Value: %i\n", letsTryMalloc->data->key, letsTryMalloc->data->value);
-    if (theQueue->tail != NULL) {
-        theQueue->tail = letsTryMalloc;
-    }
-    theQueue->tail = letsTryMalloc;
     if (theQueue->head == NULL) {
         theQueue->head = letsTryMalloc;
-        printf("WE NULL STILL");
+        theQueue->tail = letsTryMalloc;
+        printf("NULL STILL\n");
+    } else {
+        theQueue->tail->prev = letsTryMalloc;
+        letsTryMalloc->next = theQueue->tail;
+        theQueue->tail = letsTryMalloc;
     }
 }
 
 
 QueueNode *frontNode(Queue *theQueue) {
-    return theQueue->head;
+    if (theQueue->head) {
+        return theQueue->head;
+    }
 }
 
 
 data_t *frontValue(Queue *theQueue) {
+    if (theQueue->head->data) {
     return theQueue->head->data;
+    }
 }
 
 
@@ -59,10 +64,22 @@ data_t *deQueue(Queue *theQueue) {
 
 
 void removeNode(Queue *theQueue, QueueNode *p) {
+    // Start at the head, search through the tail.
+    if (theQueue->head) { // Check to make sure there is a head.
+        QueueNode *checkNode;
+        checkNode = theQueue->head;
+
+
+    }
 }
 
 
 QueueNode *findNode(Queue *theQueue, data_t *data) {
+    if (theQueue->head == NULL) {
+        // Do something here?
+    } else if (theQueue->head->data->key == data->key) {
+        return theQueue->head;
+    }
 }
 
 
@@ -75,16 +92,19 @@ void purge(Queue *theQueue, data_t *data) {
 
 
 void printQ(Queue *theQueue, char label[]) {
-    if (&theQueue->head != NULL) {
-        printf("ye");
+    printf("%s", label);
+    if (theQueue->head == NULL) {
+        printf("Empty queue.\n");
+        return;
     }
     QueueNode *nextNode;
     nextNode = theQueue->head;
-    while (&nextNode != NULL) {
-        printf("%s", label);
-        printf(toString((theQueue->head->prev->data)));
-        nextNode = nextNode->next;
+    while (nextNode != NULL) {
+        printf("\n");
+        printf(toString((nextNode->data)));
+        nextNode = nextNode->prev;
     }
+    return;
 }
 
 
@@ -116,6 +136,11 @@ int main() {
     }
     printf("That's why I\n");
     printQ(&myQueue, "MyQueue:");
+    printf("\nThe front node is at memory address %p\n", frontNode(&myQueue));
+    printf("First dequeue removes: %s\n", toString(deQueue(&myQueue)));
+    printf("Second dequeue removes: %s\n", toString(deQueue(&myQueue)));
+    printf("\nThe front node is at memory address %p\n", frontNode(&myQueue));
+    findNode(&myQueue, myQueue.head->data);
     return 0;
 
 }
