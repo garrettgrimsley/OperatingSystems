@@ -43,17 +43,12 @@ QueueNode *frontNode(Queue *theQueue) {
     if (theQueue->head) {
         return theQueue->head;
     }
-    else {
-        // Blank
-    }
 }
 
 
 data_t *frontValue(Queue *theQueue) {
     if (theQueue->head != NULL) {
         return theQueue->head->data;
-    } else {
-        // Blank
     }
 }
 
@@ -77,9 +72,7 @@ data_t *deQueue(Queue *theQueue) {
 
 
 QueueNode *findNode(Queue *theQueue, data_t *data) {
-    if (theQueue->head == NULL) {
-        // Nothing
-    } else if (theQueue->head != NULL && theQueue->head->data->key == data->key) {
+    if (theQueue->head != NULL && theQueue->head->data->key == data->key) {
         return theQueue->head;
     } else if (theQueue->head != NULL) {
         QueueNode *tempNode;
@@ -90,8 +83,8 @@ QueueNode *findNode(Queue *theQueue, data_t *data) {
             }
             tempNode = tempNode->prev;
         }
+        }
     }
-}
 
 
 data_t *findValue(Queue *theQueue, data_t *data) {
@@ -111,28 +104,11 @@ void removeNode(Queue *theQueue, QueueNode *p) {
     } else if (p->prev == NULL && p->next != NULL) {
         p->next->prev = NULL;
     } else if (p->next == NULL && p->prev == NULL) {
-        free(theQueue->head);
+        // Why would I. What?
     }
     free(p);
-
-    /*if (theQueue->head != NULL) {
-        if (theQueue->head == p) {
-            if (theQueue->head->prev != NULL) {
-            theQueue->head->prev->next = NULL;}
-            theQueue->head = theQueue->head->prev;
-        }
-        if (p->prev != NULL) {
-            p->prev->next = p->next;
-        }
-        if (p->next != NULL) {
-            p->next->prev = p->prev;
-        }
-        if (theQueue->tail == p) {
-            if (theQueue->tail->next != NULL) {
-            theQueue->tail = theQueue->tail->next;}
-        }
-        free(p);
-    }*/
+    p = NULL;
+    return;
 }
 
 void purge(Queue *theQueue, data_t *data) {
@@ -141,7 +117,8 @@ void purge(Queue *theQueue, data_t *data) {
         foundNode = findNode(theQueue, data);
         if (foundNode != NULL) {
         foundNode = findNode(theQueue, data);
-        removeNode(theQueue, foundNode);}
+            removeNode(theQueue, foundNode);
+        }
     } while (foundNode->data != NULL && theQueue->head != NULL);
 }
 
@@ -149,13 +126,12 @@ void purge(Queue *theQueue, data_t *data) {
 void printQ(Queue *theQueue, char label[]) {
     printf("%s", label);
     if (theQueue->head == NULL) {
-        printf("");
         return;
     }
     QueueNode *nextNode;
     nextNode = theQueue->head;
     while (nextNode != NULL) {
-        printf("");
+        printf(" ");
         printf(toString((nextNode->data)));
         nextNode = nextNode->prev;
     }
@@ -190,6 +166,9 @@ int main() {
 
         enQueue(&myQueue, &data[i]);
     }
+
+    // Terrible "testing"
+
     printQ(&myQueue, "MyQueue: ");
     printf("\n");
     printf("The front node is at memory address %p\n", frontNode(&myQueue));
