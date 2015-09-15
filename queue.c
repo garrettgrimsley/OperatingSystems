@@ -45,12 +45,17 @@ QueueNode *frontNode(Queue *theQueue) {
     if (theQueue->head) {
         return theQueue->head;
     }
+    else {
+        exit(EXIT_FAILURE);
+    }
 }
 
 
 data_t *frontValue(Queue *theQueue) {
     if (theQueue->head->data) {
-    return theQueue->head->data;
+        return theQueue->head->data;
+    } else {
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -61,6 +66,8 @@ data_t *deQueue(Queue *theQueue) {
         theQueue->head = theQueue->head->prev;
         theQueue->head->next = NULL;
         return data_tPointer;
+    } else {
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -70,15 +77,13 @@ void removeNode(Queue *theQueue, QueueNode *p) {
     if (theQueue->head) { // Check to make sure there is a head.
         QueueNode *checkNode;
         checkNode = theQueue->head;
-
-
     }
 }
 
 
 QueueNode *findNode(Queue *theQueue, data_t *data) {
     if (theQueue->head == NULL) {
-        // Do something to fail here.
+        exit(EXIT_FAILURE);
     } else if (theQueue->head->data->key == data->key) {
         return theQueue->head;
     } else {
@@ -91,13 +96,12 @@ QueueNode *findNode(Queue *theQueue, data_t *data) {
             tempNode = tempNode->prev;
         }
     }
+    exit(EXIT_FAILURE);
 }
 
 
 data_t *findValue(Queue *theQueue, data_t *data) {
-    if (theQueue->head) {
-
-    }
+    return findNode(theQueue, data)->data;
 }
 
 
@@ -125,11 +129,11 @@ void printQ(Queue *theQueue, char label[]) {
 char *toString(data_t *d) {
     static char result[BUFSIZ];
 
-    if (d == NULL)
+    if (d == NULL) {
         sprintf(result, "NULL");
-    else
+    } else {
         sprintf(result, "key=%d(data=%d) ", d->key, d->value);
-
+    }
     return result;
 }
 
@@ -150,11 +154,15 @@ int main() {
     }
     printf("That's why I\n");
     printQ(&myQueue, "MyQueue:");
-    printf("\nThe front node is at memory address %p\n", frontNode(&myQueue));
+    printf("\n");
+    printf("The front node is at memory address %p\n", frontNode(&myQueue));
+    printf("The value returned by frontValue is: %s\n", toString(frontValue(&myQueue)));
     printf("First dequeue removes: %s\n", toString(deQueue(&myQueue)));
     printf("Second dequeue removes: %s\n", toString(deQueue(&myQueue)));
-    printf("\nThe front node is at memory address %p\n", frontNode(&myQueue));
-    printf("The node with Key ==  %i is at memory location %p", myQueue.tail->data->key, findNode(&myQueue, &data[2]));
+    printf("The front node is at memory address %p\n", frontNode(&myQueue));
+    printf("The node with Key ==  %i is at memory location %p\n", myQueue.tail->data->key,
+           findNode(&myQueue, &data[2]));
+    printf("Value for node where Key == %i is: %s\n", 6, toString(findValue(&myQueue, &data[6])));
     return 0;
 
 }
