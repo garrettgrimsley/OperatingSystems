@@ -64,25 +64,27 @@ data_t *deQueue(Queue *theQueue) {
         data_tPointer = theQueue->head->data;
         if (theQueue->head->prev != NULL) {
             theQueue->head = theQueue->head->prev;
-        } else {
+            theQueue->head->next = NULL;
+        } else if (theQueue->head->prev == NULL) {
             theQueue->head = NULL;
         }
-        theQueue->head->next = NULL;
+        else if (theQueue->head->next != NULL) {
+            theQueue->head->next = NULL;
+        }
         return data_tPointer;
-    } else {
-        // Blank
     }
 }
 
 
 QueueNode *findNode(Queue *theQueue, data_t *data) {
     if (theQueue->head == NULL) {
-    } else if (theQueue->head->data->key == data->key && theQueue->head != NULL) {
+        // Nothing
+    } else if (theQueue->head != NULL && theQueue->head->data->key == data->key) {
         return theQueue->head;
-    } else {
+    } else if (theQueue->head != NULL) {
         QueueNode *tempNode;
         tempNode = theQueue->head;
-        while (tempNode->prev) {
+        while (tempNode->prev != NULL) {
             if (tempNode->data->key == data->key) {
                 return tempNode;
             }
@@ -93,14 +95,27 @@ QueueNode *findNode(Queue *theQueue, data_t *data) {
 
 
 data_t *findValue(Queue *theQueue, data_t *data) {
-    if (findNode(theQueue, data)->data != NULL) {
+    if (findNode(theQueue, data) != NULL) {
         return findNode(theQueue, data)->data;
     }
 }
 
 
 void removeNode(Queue *theQueue, QueueNode *p) {
-    if (theQueue->head != NULL) {
+    if (p->prev != NULL && p->next != NULL) {
+        p->prev->next = p->next;
+        p->next->prev = p->prev;
+    } else if (p->prev != NULL && p->next == NULL) {
+        theQueue->head = p->prev;
+        theQueue->head->next = NULL;
+    } else if (p->prev == NULL && p->next != NULL) {
+        p->next->prev = NULL;
+    } else if (p->next == NULL && p->prev == NULL) {
+        free(theQueue->head);
+    }
+    free(p);
+
+    /*if (theQueue->head != NULL) {
         if (theQueue->head == p) {
             if (theQueue->head->prev != NULL) {
             theQueue->head->prev->next = NULL;}
@@ -117,7 +132,7 @@ void removeNode(Queue *theQueue, QueueNode *p) {
             theQueue->tail = theQueue->tail->next;}
         }
         free(p);
-    }
+    }*/
 }
 
 void purge(Queue *theQueue, data_t *data) {
@@ -126,9 +141,8 @@ void purge(Queue *theQueue, data_t *data) {
         foundNode = findNode(theQueue, data);
         if (foundNode != NULL) {
         foundNode = findNode(theQueue, data);
-        removeNode(theQueue, foundNode);
-        foundNode = findNode(theQueue, data);}
-    } while (foundNode != NULL);
+        removeNode(theQueue, foundNode);}
+    } while (foundNode->data != NULL && theQueue->head != NULL);
 }
 
 
