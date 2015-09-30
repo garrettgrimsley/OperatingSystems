@@ -64,18 +64,14 @@ data_t *deQueue(Queue *theQueue) {
         } else if (theQueue->head->prev == NULL) {
             theQueue->head = NULL;
         }
-        else if (theQueue->head->next != NULL) {
-            theQueue->head->next = NULL;
-        }
         return data_tPointer;
     }
 }
 
 
 data_t *findValue(Queue *theQueue, data_t *data) {
-    if (findNode(theQueue, data) != NULL) {
-        return findNode(theQueue, data)->data;
-    }
+    data_t *found = findNode(theQueue, data)->data;
+    return found;
 }
 
 
@@ -105,31 +101,26 @@ QueueNode *findNode(Queue *theQueue, data_t *data) {
 
 
 void removeNode(Queue *theQueue, QueueNode *p) {
-    QueueNode pPrevious;
-    QueueNode pNext;
-    if (p->prev != NULL && p->next != NULL) {
-        pPrevious = *p->prev;
-        pNext = *p->next;
-        pPrevious.next = p->next->next;
-        pNext.prev = p->prev->prev;
-        goto TheEnd;
+    QueueNode *pPrevious;
+    QueueNode *pNext;
+    if (p == NULL) {
+        return;
+    }
+    else if (p->prev != NULL && p->next != NULL) {
+        pPrevious = p->prev;
+        pNext = p->next;
+        pPrevious->next = p->next->next;
+        pNext->prev = p->prev->prev;
     } else if (p->prev != NULL && p->next == NULL) {
         theQueue->head = p->prev;
         theQueue->head->next = NULL;
-        goto TheEnd;
     } else if (p->prev == NULL && p->next != NULL) {
         theQueue->tail = p->next;
         theQueue->tail->prev = NULL;
-        goto TheEnd;
     } else if (p->next == NULL && p->prev == NULL) {
         initQueue(theQueue);
-        goto TheEnd;
     }
-    TheEnd:
-        if (p != NULL) {
-            free(p);
-            p = NULL;
-        }
+    free(p);
     return;
 }
 
@@ -159,9 +150,8 @@ void printQ(Queue *theQueue, char label[]) {
     while (&nextNode->data != NULL) {
         printf("");
         printf(toString((nextNode->data)));
-        if (nextNode->prev != NULL) {
         nextNode = nextNode->prev;
-    }return;}
+    }
     return;
 }
 
