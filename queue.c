@@ -70,33 +70,27 @@ data_t *deQueue(Queue *theQueue) {
 
 
 data_t *findValue(Queue *theQueue, data_t *data) {
-    data_t *found = findNode(theQueue, data)->data;
-    return found;
+    QueueNode *found = findNode(theQueue, data);
+    if (found != NULL) {
+        return found->data;
+    }
 }
 
 
 QueueNode *findNode(Queue *theQueue, data_t *data) {
-    QueueNode *tempNode;
-    tempNode = theQueue->head;
-
-    if (theQueue->head == NULL) {
-        return NULL;
-    }
-
-    if (tempNode->data->key == data->key) {
-        return tempNode;
-    }
-    while (tempNode->prev != NULL) {
-        if (tempNode->data->key == data->key) {
-            return tempNode;
+    if (theQueue->head != NULL) {
+        QueueNode *tempNode = theQueue->head;
+        int i = 1;
+        while (i == 1) {
+            if (tempNode->data->key == data->key) {
+                return tempNode;
+            } else if (tempNode != theQueue->tail) {
+                tempNode = tempNode->prev;
+            } else {
+                return NULL;
+            }
         }
-        if (tempNode->prev != NULL) {
-        tempNode = tempNode->prev;
-    }}
-    if (tempNode->data->key == data->key) {
-        return tempNode;
     }
-    return NULL;
 }
 
 
@@ -105,52 +99,62 @@ void removeNode(Queue *theQueue, QueueNode *p) {
     QueueNode *pNext;
     if (p == NULL) {
         return;
-    }
-    else if (p->prev != NULL && p->next != NULL) {
+    } else if (theQueue->head == NULL) { // Empty
+        return;
+    } else if (theQueue->head == theQueue->tail && theQueue->head == p) { // Single
+        initQueue(theQueue);
+    } else if (p == theQueue->head) { // Head
+        pPrevious = p->prev;
+        theQueue->head = pPrevious;
+        theQueue->head->next = NULL;
+    } else if (p == theQueue->tail) { // Tail
+        pNext = p->next;
+        theQueue->tail = pNext;
+        theQueue->tail->prev = NULL;
+    } else { // Middle
         pPrevious = p->prev;
         pNext = p->next;
-        pPrevious->next = p->next->next;
-        pNext->prev = p->prev->prev;
-    } else if (p->prev != NULL && p->next == NULL) {
-        theQueue->head = p->prev;
-        theQueue->head->next = NULL;
-    } else if (p->prev == NULL && p->next != NULL) {
-        theQueue->tail = p->next;
-        theQueue->tail->prev = NULL;
-    } else if (p->next == NULL && p->prev == NULL) {
-        initQueue(theQueue);
-    }
+        pPrevious->next = pNext;
+        pNext->prev = pPrevious;
+    };
+    p->prev = p->next = NULL;
     free(p);
-    return;
 }
+
 
 void purge(Queue *theQueue, data_t *data) {
     QueueNode *foundNode;
-    QueueNode *theNextNode;
-    QueueNode *anotherNode;
-    theNextNode = theQueue->head;
-    while (theNextNode != NULL) {
-        foundNode = findNode(theQueue, data);
-        if (foundNode != NULL) {
-        foundNode = findNode(theQueue, data);
-        removeNode(theQueue, foundNode);}
-    } while (foundNode->data != NULL && theQueue->head != NULL);
+    QueueNode *checkNext = theQueue->head;
+    if (theQueue->head != NULL) {
+        int i = 1;
+        while (i == 1) {
+            foundNode = findNode(theQueue, data);
+            if (foundNode != NULL) {
+                removeNode(theQueue, foundNode);
+                if (checkNext != NULL) {
+                    checkNext = checkNext->prev;
+                } else {checkNext = theQueue->head;}
+            } else {
+                i = 0;
+            }
+        }
+    }
 }
 
 
-
 void printQ(Queue *theQueue, char label[]) {
-    printf("%s", label);
-    if (theQueue->head == NULL) {
-        return;
-    }
-    QueueNode *nextNode;
-    nextNode = theQueue->head;
-    printf("\t");
-    while (&nextNode->data != NULL) {
-        printf("");
-        printf(toString((nextNode->data)));
-        nextNode = nextNode->prev;
+    printf("\t \t \t %s", label);
+    if (theQueue->head != NULL) {
+        QueueNode *printNode = theQueue->head;
+        int i = 1;
+        while (i == 1) {
+            printf(toString(printNode->data));
+            if (printNode != theQueue->tail) {
+                printNode = printNode->prev;
+            } else {
+                i = 0;
+            }
+        }
     }
     return;
 }
@@ -167,39 +171,27 @@ char *toString(data_t *d) {
     return result;
 }
 
-
-int main() {
-    Queue myQueue;
-    QueueNode *p;
-    data_t data[10], d2;
-    int i;
-    initQueue(&myQueue);
-    for (i = 0; i < 10; i++) {
-        data[i].key = i;
-        data[i].value = 10 * i;
-        enQueue(&myQueue, &data[i]);
-    }
-    // Terrible "testing"
-    printQ(&myQueue, "MyQueue: ");
-    printf("\n");
-    printf("The front node is at memory address %p\n", frontNode(&myQueue));
-    printf("The value returned by frontValue is: %s\n", toString(frontValue(&myQueue)));
-    printf("First dequeue removes: %s\n", toString(deQueue(&myQueue)));
-    printf("Second dequeue removes: %s\n", toString(deQueue(&myQueue)));
-    printf("The front node is at memory address %p\n", frontNode(&myQueue));
-    printf("The node with Key ==  %i is at memory location %p\n", myQueue.tail->data->key,
-           findNode(&myQueue, &data[2]));
-    printf("Value for node where Key == %i is: %s\n", 6, toString(findValue(&myQueue, &data[6])));
-    printQ(&myQueue, "Queue is now: ");
-    printf("\n");
-    p = myQueue.head->prev->prev;
-    printf("Pointer p, address: %p points to item with data: %s\n", p, toString(p->data));
-    printf("Calling to remove node p\n");
-    removeNode(&myQueue, p);
-    printQ(&myQueue, "Queue after removeNode() call: ");
-    printf("\n");
-    printf("Going to purge the nodes with key of %i\n", data[5]);
-    purge(&myQueue, &data[5]);
-    printQ(&myQueue, "Queue after purge() call: ");
-    return 0;
-}
+//
+//int main() {
+//    Queue newQueue = {NULL, NULL};
+//    data_t dataZero = {0, 0};
+//    data_t dataOne = {1, 1};
+//    data_t dataTwo = {2, 2};
+//    data_t dataThree = {3, 3};
+//    Queue *qP = &newQueue;
+//    data_t *dPZero = &dataZero;
+//    data_t *dPOne = &dataOne;
+//    data_t *dPTwo = &dataTwo;
+//    data_t *dPThree = &dataThree;
+//    enQueue(qP, dPZero);
+//    enQueue(qP, dPOne);
+//    enQueue(qP, dPTwo);
+//    enQueue(qP, dPThree);
+//    QueueNode *removeZero = findNode(qP, dPZero);
+//    QueueNode *removeOne = findNode(qP, dPOne);
+//    QueueNode *removeTwo = findNode(qP, dPTwo);
+//    QueueNode *removeThree = findNode(qP, dPThree);
+//    removeNode(qP, removeTwo);
+//    removeNode(qP, removeOne);
+//    return 0;
+//}
