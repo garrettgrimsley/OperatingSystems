@@ -1,17 +1,3 @@
-/****************************************************************************/
-/* File: queue.c
- */
-/****************************************************************************/
-
-/****************************************************************************/
-/*                                                                          */
-/*              Simple Queue ADT                                            */
-/*                                                                          */
-/*              Implementation                                              */
-/*                                                                          */
-/****************************************************************************/
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "queue.h"
@@ -170,28 +156,3 @@ char *toString(data_t *d) {
     }
     return result;
 }
-
-//
-//int main() {
-//    Queue newQueue = {NULL, NULL};
-//    data_t dataZero = {0, 0};
-//    data_t dataOne = {1, 1};
-//    data_t dataTwo = {2, 2};
-//    data_t dataThree = {3, 3};
-//    Queue *qP = &newQueue;
-//    data_t *dPZero = &dataZero;
-//    data_t *dPOne = &dataOne;
-//    data_t *dPTwo = &dataTwo;
-//    data_t *dPThree = &dataThree;
-//    enQueue(qP, dPZero);
-//    enQueue(qP, dPOne);
-//    enQueue(qP, dPTwo);
-//    enQueue(qP, dPThree);
-//    QueueNode *removeZero = findNode(qP, dPZero);
-//    QueueNode *removeOne = findNode(qP, dPOne);
-//    QueueNode *removeTwo = findNode(qP, dPTwo);
-//    QueueNode *removeThree = findNode(qP, dPThree);
-//    removeNode(qP, removeTwo);
-//    removeNode(qP, removeOne);
-//    return 0;
-//}
