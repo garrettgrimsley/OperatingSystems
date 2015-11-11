@@ -2,15 +2,16 @@
 cd outputs/
 rm *
 cd ..
-for i in {1..2};
+for i in {1..10};
 do
+    echo ======== LOOP NUMBER $i ========
 	./OSP parameters.high > /dev/null
 	tail simulation.run | egrep 'throughput|turnaround|waiting' > "outputs/vanilla$i.txt"
 	./OSP.demo.FCFS -d parameters.high > /dev/null
 	tail simulation.run | egrep 'throughput|turnaround|waiting' > "outputs/fcfs$i.txt"
 	./OSP.demo.RR -d parameters.high > /dev/null
 	tail simulation.run | egrep 'throughput|turnaround|waiting' > "outputs/rr$i.txt"
-	./OSP.demo.SJN -d parameters.high > /dev/null
+	./OSP.demo.SJN -d parameters.high > /dev/null;
 	tail simulation.run | egrep 'throughput|turnaround|waiting' > "outputs/sjn$i.txt"
 done
 cd outputs
